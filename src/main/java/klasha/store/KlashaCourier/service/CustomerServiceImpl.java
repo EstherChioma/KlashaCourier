@@ -69,6 +69,11 @@ public class CustomerServiceImpl implements CustomerService{
 
     }
 
+    @Override
+    public Customer getLoggedInUser() {
+        return null;
+    }
+
 //    @Override
 //    public Customer getLoggedInUser() {
 //
