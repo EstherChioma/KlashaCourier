@@ -50,6 +50,10 @@ public class Customer implements Serializable {
     @JsonIgnore
     private AppUser appUser;
 
+   @OneToMany
+   private List<Order> order;
+
+
     @JsonFormat(pattern="dd/MM/yyyy")
     @CreationTimestamp
     private LocalDate dateCreated;

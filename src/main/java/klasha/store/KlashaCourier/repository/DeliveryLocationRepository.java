@@ -1,15 +1,10 @@
 package klasha.store.KlashaCourier.repository;
 
-
-import klasha.store.KlashaCourier.models.Staff;
+import klasha.store.KlashaCourier.models.DeliveryLocation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-
 @Repository
-
-public interface StaffRepository extends JpaRepository<Staff, Long> {
-
-    Staff findByEmail(String email);
+public interface DeliveryLocationRepository extends JpaRepository<DeliveryLocation, Long> {
 
 }

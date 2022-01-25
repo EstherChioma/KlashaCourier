@@ -2,11 +2,9 @@ package klasha.store.KlashaCourier.service;
 
 
 
-import klasha.store.KlashaCourier.models.AppUser;
-import klasha.store.KlashaCourier.models.Customer;
-import klasha.store.KlashaCourier.models.Role;
-import klasha.store.KlashaCourier.repository.AppUserRepository;
-import klasha.store.KlashaCourier.repository.CustomerRepository;
+import klasha.store.KlashaCourier.dto.OrderDto;
+import klasha.store.KlashaCourier.models.*;
+import klasha.store.KlashaCourier.repository.*;
 import klasha.store.KlashaCourier.security.authfacade.AuthenticationFacade;
 import klasha.store.KlashaCourier.service.exception.CustomerAlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +30,15 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Autowired
     AppUserRepository appUserRepository;
+
+    @Autowired
+    PickupLocationRepository pickupLocationRepository;
+
+    @Autowired
+    DeliveryLocationRepository deliveryLocationRepository;
+
+    @Autowired
+    OrderRepository orderRepository;
 
     @Override
     public void create_account(Customer registrationDto) throws CustomerAlreadyExistException {
@@ -66,6 +73,48 @@ public class CustomerServiceImpl implements CustomerService{
         } else {
             throw new CustomerAlreadyExistException("a customer with email "+ registrationDto.getEmail() +" already exist!");
         }
+
+    }
+
+    @Override
+    public void placeOrder(Order order) {
+
+        log.info("delivery order request --->{}" + order);
+
+        Customer customer = getLoggedInUser();
+        log.info("logged-in customer ---> "+ customer);
+
+        PickupLocation pickupLocation = new PickupLocation();
+        pickupLocation.setFirstName(order.getPickupLocation().getFirstName());
+        pickupLocation.setLastName(order.getPickupLocation().getLastName());
+        pickupLocation.setAddress(order.getPickupLocation().getAddress());
+        pickupLocation.setPhoneNumber(order.getPickupLocation().getPhoneNumber());
+        pickupLocation.setEmail(order.getPickupLocation().getEmail());
+        pickupLocation.setLandmark(order.getPickupLocation().getLandmark());
+
+        pickupLocationRepository.save(pickupLocation);
+
+        DeliveryLocation deliveryLocation = new DeliveryLocation();
+        deliveryLocation.setFirstName(order.getDeliveryLocation().getFirstName());
+        deliveryLocation.setLastName(order.getPickupLocation().getFirstName());
+        deliveryLocation.setAddress(order.getPickupLocation().getAddress());
+        deliveryLocation.setEmail(order.getPickupLocation().getEmail());
+        deliveryLocation.setLandmark(order.getDeliveryLocation().getLandmark());
+        deliveryLocation.setPhoneNumber(order.getPickupLocation().getPhoneNumber());
+
+        deliveryLocationRepository.save(deliveryLocation);
+
+        Order order1 = new Order();
+        order.setPickupLocation(pickupLocation);
+        order.setDeliveryLocation(deliveryLocation);
+        order.setScheduleType(ScheduleType.RIGHTWAY);
+
+        orderRepository.save(order1);
+
+        log.info("saves order --->" + order1);
+
+
+
 
     }
 
